@@ -41,6 +41,18 @@ sentimentToSmiley = (score)->
   else
     '😀'
 
+sentimentToNormalizedScore = (score)->
+  if score <= -2
+    -2
+  else if (score < 0 && score > -2)
+    -1
+  else if score == 0
+    0
+  else if (score > 0 && score < 2)
+    1
+  else
+    2
+
 sentimentToText = (score)->
   if score <= -2
     'très négatif'
@@ -55,15 +67,42 @@ sentimentToText = (score)->
 
 setupTweetIndex = ->
   index = {
-    mappings: {
-      tweet: {
-        properties: {
-          timestamp_ms: {
+    analysis:
+      analyzer:
+        standard:
+          type: "standard",
+          stopwords: ["_english_", "_french_"]
+    mappings:
+      tweet:
+        properties:
+          timestamp_ms:
             type: "date"
-          }
-        }
-      }
-    }
+          id_str:
+            type: "string"
+            index: "not_analyzed"
+          sentiment:
+            type: "string"
+            index: "not_analyzed"
+          smiley:
+            type: "string"
+            index: "not_analyzed"
+          user:
+            properties:
+              name:
+                type: "string"
+                index: "not_analyzed"
+              screen_name:
+                type: "string"
+                index: "not_analyzed"
+          entities:
+            properties:
+              hashtags:
+                properties:
+                  text:
+                    type: "string"
+                    index: "not_analyzed"
+
+
   }
 
   req_options = {
@@ -96,9 +135,9 @@ startStream = ->
           else
             sentiment(tweet.text).score
         tweet.score = score
+        tweet.normalized_score = sentimentToNormalizedScore(score)
         tweet.sentiment = sentimentToText(score)
         tweet.smiley = sentimentToSmiley(score)
-        tweet._timestamp = parseInt(tweet.timestamps_ms)
         req_options = {
           method: 'PUT',
           host: 'elasticsearch',
@@ -120,6 +159,5 @@ startStream = ->
       console.log error
   )
 
-
-
+# start the app after waiting for Elastic search to start
 setTimeout( startStream, 10000)
