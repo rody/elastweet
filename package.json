@@ -1,0 +1,39 @@
+{
+  "name": "elastweet",
+  "version": "0.0.1",
+  "description": "A quick (and dirty) Twitter to elasticsearch demo",
+  "keywords": ["twitter", "elasticsearch", "docker"],
+  "private": true,
+  "main": "index.coffee",
+  "scripts": {
+    "test": "mocha --compilers coffee:coffee-script/register -w",
+    "start": "coffee elastweet.coffee"
+  },
+  "author": {
+    "name": "Rodolphe Blancho"
+  },
+  "contributors": {
+    "name": "Emmanuel Lebeaupin"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rody/elastweet.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rody/elastweet/issues"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "coffee-script": "^1.10.0",
+    "html-entities": "^1.2.0",
+    "node-emoji": "^1.0.4",
+    "redis": "^2.2.5",
+    "sentiment": "^1.0.2",
+    "sentiment-french": "^1.0.2",
+    "twitter": "^1.2.5"
+  },
+  "devDependencies": {
+    "mocha": "^2.3.3",
+    "should": "^7.1.1"
+  }
+}
