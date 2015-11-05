@@ -13,7 +13,7 @@ kibana:
     - "5601:5601"
 
 redis:
-  image: redis
+  image: redis:3.0.5
 
 elastwitter:
   build: .
